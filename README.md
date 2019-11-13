@@ -38,3 +38,4 @@ System information for the process manager is derived from the following system 
 5. Running processes - `/proc/meminfo`
 6. Up time - `/proc/uptime`
 
+More information about proc in the [man page](http://man7.org/linux/man-pages/man5/proc.5.html) or enter `man proc` at the command line.
