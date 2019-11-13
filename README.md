@@ -37,5 +37,14 @@ System information for the process manager is derived from the following system 
 4. Total processes - `/proc/meminfo` 
 5. Running processes - `/proc/meminfo`
 6. Up time - `/proc/uptime`
+7. CPU usage - `/proc/stat`
+
+Processes information also resides mainly in the `/proc/` directory:
+1. PID - `/proc/[pid]` where pid is in any directory having an integer for its name
+2. UID - `/proc/[pid]/status`
+3. Username - `/etc/passwd`
+4. Processor utilization - `/proc/[pid]/stat`
+5. Memory utilization - `/proc/[pid]/stat`
+6. Command - `/proc/[pid]/cmdline`
 
 More information about proc in the [man page](http://man7.org/linux/man-pages/man5/proc.5.html) or enter `man proc` at the command line.
