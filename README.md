@@ -27,3 +27,14 @@ This project uses [Make](https://www.gnu.org/software/make/). The Makefile has f
 * `format` applies [ClangFormat](https://clang.llvm.org/docs/ClangFormat.html) to style the source code
 * `debug` compiles the source code and generates an executable, including debugging symbols
 * `clean` deletes the `build/` directory, including all of the build artifacts
+
+## System information
+System information for the process manager is derived from the following system files:
+
+1. Kernel information - `/proc/version`
+2. Operating system - `/etc/os-release`
+3. Memory utilization - `/proc/meminfo`
+4. Total processes - `/proc/meminfo` 
+5. Running processes - `/proc/meminfo`
+6. Up time - `/proc/uptime`
+
