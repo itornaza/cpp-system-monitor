@@ -23,7 +23,8 @@ float Processor::Utilization() {
   int guest = std::stoi(timers[8]);
   int guest_nice = std::stoi(timers[9]);
   
-  float t_total = user + nice + system + idle + iowait + irq + softirq + steal + guest + guest_nice;
+  float t_total = user + nice + system + idle + iowait + irq + softirq 
+                  + steal + guest + guest_nice;
   float t_idle = idle + iowait;
   float percentage = (t_total - t_idle) / t_total;
   
