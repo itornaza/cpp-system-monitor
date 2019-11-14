@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #include "processor.h"
 #include "linux_parser.h"
 
@@ -21,10 +23,9 @@ float Processor::Utilization() {
   int guest = std::stoi(timers[8]);
   int guest_nice = std::stoi(timers[9]);
   
-  float t_total = user + nice + system + idle + iowait + irq + softirq + steal + guest + guest_nice;
+  float t_total = user + nice + system + idle + iowait + irq + softirq + steal;
   float t_idle = idle + iowait;
-  float t_usage = t_total - t_idle;
-  float percentage = (t_usage / t_total);
+  float percentage = (t_total - t_idle) / t_total;
   
   return percentage; 
 }
