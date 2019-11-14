@@ -11,7 +11,6 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -34,7 +33,6 @@ string LinuxParser::OperatingSystem() {
   return value;
 }
 
-// DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
   string skip;
   string kernel;
@@ -68,7 +66,7 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
+// Reads and returns the system memory utilization
 float LinuxParser::MemoryUtilization() { 
   string skip;
   string temp;
@@ -88,7 +86,7 @@ float LinuxParser::MemoryUtilization() {
   return (mem_total - mem_free) / mem_total;
 }
 
-// TODO: Read and return the system uptime
+// Reads and returns the system uptime
 long LinuxParser::UpTime() { 
   long uptime = 0.0;
   string temp = "0.0";
@@ -116,7 +114,7 @@ long LinuxParser::ActiveJiffies() { return 0; }
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
-// TODO: Read and return CPU utilization
+// Reads and returns CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
   vector<string> timers;
   string timer;
@@ -157,12 +155,12 @@ int LinuxParser::SystemProcesses(string token) {
   return processes; 
 }
 
-// TODO: Read and return the total number of processes
+// Reads and returns the total number of processes
 int LinuxParser::TotalProcesses() { 
   return LinuxParser::SystemProcesses("processes");
 }
 
-// TODO: Read and return the number of running processes
+// Reads and returns the number of running processes
 int LinuxParser::RunningProcesses() { 
   return LinuxParser::SystemProcesses("procs_running");
 }

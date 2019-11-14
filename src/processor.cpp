@@ -9,7 +9,7 @@
 using std::string;
 using std::vector;
 
-// TODO: Return the aggregate CPU utilization
+// Returns the aggregate CPU utilization
 float Processor::Utilization() { 
   vector<string> timers = LinuxParser::CpuUtilization();
   int user  = std::stoi(timers[0]);
