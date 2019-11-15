@@ -133,13 +133,13 @@ vector<string> LinuxParser::CpuUtilization() {
   return timers; 
 }
 
-// Parses the /proc/stat for a given token
-int LinuxParser::SystemProcesses(string token) {
-  int processes = 0;
+// Parses the file in the path for a given token as a key to a value
+string LinuxParser::SystemProcesses(string token, string path) {
+  string processes;
   bool search = true;
   string line;
   string temp;
-  std::ifstream stream(kProcDirectory + kStatFilename);
+  std::ifstream stream(path);
   if(stream.is_open()) {
     while(search == true && stream.peek() != EOF) {
       std::getline(stream, line);
@@ -147,7 +147,7 @@ int LinuxParser::SystemProcesses(string token) {
       linestream >> temp;
       if(temp == token) {
         linestream >> temp;
-        processes = std::stoi(temp);
+        processes = temp;
         search = false;
       } // End inner if
     } // End while
@@ -157,30 +157,78 @@ int LinuxParser::SystemProcesses(string token) {
 
 // Reads and returns the total number of processes
 int LinuxParser::TotalProcesses() { 
-  return LinuxParser::SystemProcesses("processes");
+  string path = kProcDirectory + kStatFilename;
+  string result = LinuxParser::SystemProcesses("processes", path);
+  return std::stoi(result);
 }
 
 // Reads and returns the number of running processes
 int LinuxParser::RunningProcesses() { 
-  return LinuxParser::SystemProcesses("procs_running");
+  string path = kProcDirectory + kStatFilename;
+  string result = LinuxParser::SystemProcesses("procs_running", path);
+  return std::stoi(result);
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+// Reads and returns the command associated with a process
+string LinuxParser::Command(int pid) { 
+  string line;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+  }
+  return line; 
+}
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+// Reads and returns the memory used by a process
+string LinuxParser::Ram(int pid) { 
+  string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
+  return LinuxParser::SystemProcesses("VmSize:", path);
+}
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+// Reads and returns the user ID associated with a process
+string LinuxParser::Uid(int pid) { 
+  string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
+  return LinuxParser::SystemProcesses("Uid:", path);
+}
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+// Reads and returns the user associated with a process
+string LinuxParser::User(int pid) {
+  string line;
+  string test_user;
+  string test_uid;
+  string skip;
+  string user = "";
+  string uid = LinuxParser::Uid(pid);
+  std::ifstream stream(kPasswordPath);
+  bool search = true;
+  if (stream.is_open()) {
+    while(search && stream.peek() != EOF ) {
+      std::getline(stream, line);
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line); 
+      linestream >> test_user >> skip >> test_uid;
+      if(uid == test_uid) {
+        user = test_user;
+        search = false;
+      }
+    }
+  }
+  return user; 
+}
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+// Reads and returns the uptime of a process
+long LinuxParser::UpTime(int pid) { 
+  long ticks;
+  string line;
+  string skip;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line); 
+    for(int i = 1; i < 22; ++i) {
+      linestream >> skip;
+    }
+    linestream >> ticks;
+  }
+  return ticks / sysconf(_SC_CLK_TCK);
+}

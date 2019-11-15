@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+// TODO: Remove after testing
+#include <iostream>
+
 #include "linux_parser.h"
 #include "process.h"
 #include "processor.h"
@@ -21,6 +24,32 @@ Processor& System::Cpu() {
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
+  vector<int> pids = LinuxParser::Pids();
+  Process temp;
+
+  // TODO: Remove after testing
+  // temp.Pid(pids[0]);
+  // int pid = pids[0];
+  // std::cout << "*****" << LinuxParser::Command(pid) << "*****" << std::endl;
+  // std::cout << "*****" << LinuxParser::Ram(pid) << "*****" << std::endl;
+  // std::cout << "*****" << LinuxParser::Uid(pid) << "*****" << std::endl;
+  // std::cout << "*****" << LinuxParser::User(pid) << "*****" << std::endl;
+  // std::cout << "*****" << LinuxParser::UpTime(pid) << "*****" << std::endl;
+    
+  // TODO: The number of processes (n in ncurses file) is not consistent 
+  // to the number of our processes
+  
+  for (auto pid : pids) {
+    // TODO: Remove after testing
+    // std::cout << "***" << pid << "***" << std::endl;
+    temp.Pid(pid);
+    temp.User(LinuxParser::User(pid));
+    temp.Command(LinuxParser::Command(pid));
+    // TODO: temp.CpuUtilization(pid);
+    temp.Ram(LinuxParser::Ram(pid));
+    temp.UpTime(LinuxParser::UpTime(pid));
+    processes_.push_back(temp);
+  }
   return processes_; 
 }
 
