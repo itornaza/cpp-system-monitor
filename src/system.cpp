@@ -35,16 +35,6 @@ vector<Process>& System::Processes() {
     p.UpTime(pid);
     processes_.push_back(p);
   }
-  
-//   for (int p : processes_) {
-//     cout << "**" << p.Pid() << "**" << endl;
-//     cout << "**" << p.User() << "**" << endl;
-//     cout << "**" << p.Command() << "**" << endl;
-//     cout << "**" << p.CpuUtilization() << "**" << endl;
-//     cout << "**" << p.Ram() << "**" << endl;
-//     cout << "**" << p.UpTime() << "**" << endl;
-//   }
-  
   return processes_; 
 }
 

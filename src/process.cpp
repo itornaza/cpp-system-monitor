@@ -26,17 +26,20 @@ float Process::CpuUtilization() {
 
 // TODO: Return the command that generated this process
 string Process::Command() { 
-  return command_; 
+  return string();
+  // return command_; 
 }
 
 // TODO: Return this process's memory utilization
 string Process::Ram() { 
-  return ram_;
+  return string();
+  // return ram_;
 }
 
 // TODO: Return the user (name) that generated this process
 string Process::User() { 
-  return user_; 
+  return string();
+  // return user_; 
 }
 
 // TODO: Return the age of this process (in seconds)
@@ -67,8 +70,8 @@ void Process::Command(int pid) {
 }
 
 void Process::CpuUtilization(int pid) {
-  long a_process = LinuxParser::ActiveJiffies(pid);
-  long a_processor = LinuxParser::ActiveJiffies();
+  float a_process = static_cast<float>(LinuxParser::ActiveJiffies(pid));
+  float a_processor = static_cast<float>(LinuxParser::ActiveJiffies());
   cpu_utilization_ = a_process / a_processor;
 }
 
