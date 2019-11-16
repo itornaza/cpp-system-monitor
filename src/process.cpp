@@ -70,7 +70,9 @@ void Process::CpuUtilization(int pid) {
 }
 
 void Process::Ram(int pid) {
-  ram_ = LinuxParser::Ram(pid);
+  float kbytes = std::stof(LinuxParser::Ram(pid));
+  float mbytes = kbytes / 1000.0; // in MB
+  ram_ = std::to_string(mbytes);
 }
 
 void Process::UpTime(int pid){
