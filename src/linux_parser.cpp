@@ -6,9 +6,6 @@
 
 #include "linux_parser.h"
 
-// TODO: Remove after testing
-#include <iostream>
-
 using std::stof;
 using std::string;
 using std::to_string;

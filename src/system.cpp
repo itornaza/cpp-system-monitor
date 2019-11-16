@@ -9,10 +9,9 @@
 #include "processor.h"
 #include "system.h"
 
-// TODO: Remove after testing
+// Remove after testing
 #include <iostream>
-using std::cout;
-using std::endl;
+using namespace std;
 
 using std::set;
 using std::size_t;

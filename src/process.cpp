@@ -4,9 +4,6 @@
 #include <string>
 #include <vector>
 
-// TODO: Remove after testing
-#include <iostream>
-
 #include "process.h"
 #include "linux_parser.h"
 
@@ -14,35 +11,32 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
+// Return this process's ID
 int Process::Pid() { 
   return pid_; 
 }
 
-// TODO: Return this process's CPU utilization
+// Return this process's CPU utilization
 float Process::CpuUtilization() { 
   return cpu_utilization_;
 }
 
-// TODO: Return the command that generated this process
+// Return the command that generated this process
 string Process::Command() { 
-  return string();
-  // return command_; 
+  return command_; 
 }
 
-// TODO: Return this process's memory utilization
+// Return this process's memory utilization
 string Process::Ram() { 
-  return string();
-  // return ram_;
+  return ram_;
 }
 
-// TODO: Return the user (name) that generated this process
+// Return the user (name) that generated this process
 string Process::User() { 
-  return string();
-  // return user_; 
+  return user_; 
 }
 
-// TODO: Return the age of this process (in seconds)
+// Return the age of this process (in seconds)
 long Process::UpTime() { 
   return up_time_;
 }
