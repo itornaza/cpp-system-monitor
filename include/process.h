@@ -22,11 +22,11 @@ class Process {
   // Mutators
   //----------------
   void Pid(int);
-  void User(std::string);
-  void Command(std::string);
-  void CpuUtilization(float);
-  void Ram(std::string);
-  void UpTime(long int);
+  void User(int);
+  void Command(int);
+  void CpuUtilization(int);
+  void Ram(int);
+  void UpTime(int);
   
   //---------------------
   // Operator overload

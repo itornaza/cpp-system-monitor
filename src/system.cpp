@@ -4,13 +4,15 @@
 #include <string>
 #include <vector>
 
-// TODO: Remove after testing
-#include <iostream>
-
 #include "linux_parser.h"
 #include "process.h"
 #include "processor.h"
 #include "system.h"
+
+// TODO: Remove after testing
+#include <iostream>
+using std::cout;
+using std::endl;
 
 using std::set;
 using std::size_t;
@@ -18,38 +20,31 @@ using std::string;
 using std::vector;
 
 // TODO: Return the system's CPU
-Processor& System::Cpu() { 
-  return cpu_; 
-}
+Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
   vector<int> pids = LinuxParser::Pids();
-  Process temp;
-
-  // TODO: Remove after testing
-  // temp.Pid(pids[0]);
-  // int pid = pids[0];
-  // std::cout << "*****" << LinuxParser::Command(pid) << "*****" << std::endl;
-  // std::cout << "*****" << LinuxParser::Ram(pid) << "*****" << std::endl;
-  // std::cout << "*****" << LinuxParser::Uid(pid) << "*****" << std::endl;
-  // std::cout << "*****" << LinuxParser::User(pid) << "*****" << std::endl;
-  // std::cout << "*****" << LinuxParser::UpTime(pid) << "*****" << std::endl;
-    
-  // TODO: The number of processes (n in ncurses file) is not consistent 
-  // to the number of our processes
-  
-  for (auto pid : pids) {
-    // TODO: Remove after testing
-    // std::cout << "***" << pid << "***" << std::endl;
-    temp.Pid(pid);
-    temp.User(LinuxParser::User(pid));
-    temp.Command(LinuxParser::Command(pid));
-    // TODO: temp.CpuUtilization(pid);
-    temp.Ram(LinuxParser::Ram(pid));
-    temp.UpTime(LinuxParser::UpTime(pid));
-    processes_.push_back(temp);
+  Process p;
+  for (int pid : pids) {
+    p.Pid(pid);
+    p.User(pid);
+    p.Command(pid);
+    p.CpuUtilization(pid);
+    p.Ram(pid);
+    p.UpTime(pid);
+    processes_.push_back(p);
   }
+  
+//   for (int p : processes_) {
+//     cout << "**" << p.Pid() << "**" << endl;
+//     cout << "**" << p.User() << "**" << endl;
+//     cout << "**" << p.Command() << "**" << endl;
+//     cout << "**" << p.CpuUtilization() << "**" << endl;
+//     cout << "**" << p.Ram() << "**" << endl;
+//     cout << "**" << p.UpTime() << "**" << endl;
+//   }
+  
   return processes_; 
 }
 

@@ -6,6 +6,9 @@
 
 #include "linux_parser.h"
 
+// TODO: Remove after testing
+#include <iostream>
+
 using std::stof;
 using std::string;
 using std::to_string;
@@ -101,18 +104,49 @@ long LinuxParser::UpTime() {
   return uptime; 
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+// Reads and returns the number of active jiffies for a PID
+long LinuxParser::ActiveJiffies(int pid) { 
+  string utime;
+  string stime;
+  string line;
+  string skip;
+  std::ifstream stream(kProcDirectory + std::to_string(pid)+ kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line); 
+    for(int i = 1; i < 13; ++i) {
+      linestream >> skip;
+    }
+    linestream >> utime >> stime;
+  }
+  long a_jiffies = (std::stol(utime) + std::stol(stime));
+  return a_jiffies;
+}
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+// Read and return the number of jiffies for the system
+long LinuxParser::Jiffies() { 
+  vector<string> jiffies = CpuUtilization();
+  long t_jiffies = 0;
+  for(string jiffie : jiffies) {
+    t_jiffies += std::stoi(jiffie);
+  }
+  return t_jiffies;
+}
 
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+// Read and return the number of active jiffies for the system
+long LinuxParser::ActiveJiffies() { 
+  long a_jiffies = Jiffies() - IdleJiffies();
+  return a_jiffies;
+}
 
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+// Read and return the number of idle jiffies for the system
+long LinuxParser::IdleJiffies() { 
+  vector<string> jiffies = CpuUtilization();
+  long idle = std::stoi(jiffies[3]);
+  long iowait = std::stoi(jiffies[4]);
+  long i_jiffies = idle + iowait;
+  return i_jiffies;
+}
 
 // Reads and returns CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
