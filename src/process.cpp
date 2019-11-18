@@ -70,8 +70,8 @@ void Process::CpuUtilization(int pid) {
 }
 
 void Process::Ram(int pid) {
-  float kbytes = std::stof(LinuxParser::Ram(pid));
-  float mbytes = kbytes / 1000.0; // in MB
+  int kbytes = std::atoi(LinuxParser::Ram(pid).c_str());
+  int mbytes = kbytes / 1000; // in MB
   ram_ = std::to_string(mbytes);
 }
 
