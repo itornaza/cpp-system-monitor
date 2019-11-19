@@ -11,6 +11,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//-----------------------------------------------------------------------------
+// Accessors
+//-----------------------------------------------------------------------------
+
 // Return this process's ID
 int Process::Pid() { 
   return pid_; 
@@ -43,13 +47,13 @@ long Process::UpTime() {
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { 
-  return true; 
+bool Process::operator<(Process const& a) const { 
+  return this->cpu_utilization_ < a.cpu_utilization_;
 }
 
-//--------------
+//-----------------------------------------------------------------------------
 // Mutators
-//--------------
+//-----------------------------------------------------------------------------
 
 void Process::Pid(int pid) {
   pid_ = pid;

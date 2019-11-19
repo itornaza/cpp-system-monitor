@@ -9,19 +9,19 @@
 #include "processor.h"
 #include "system.h"
 
-// Remove after testing
-#include <iostream>
-using namespace std;
-
 using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
 
+//-----------------------------------------------------------------------------
+// Accessors
+//-----------------------------------------------------------------------------
+
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
+// Returns a container composed of the system's processes
 vector<Process>& System::Processes() { 
   vector<int> pids = LinuxParser::Pids();
   for (int pid : pids) {
@@ -34,6 +34,9 @@ vector<Process>& System::Processes() {
     p.UpTime(pid);
     processes_.push_back(p);
   }
+
+  // TODO: sort processes and then return
+  // std::sort(processes_.begin(), processes_.end(), std::less<Process>());
   return processes_; 
 }
 

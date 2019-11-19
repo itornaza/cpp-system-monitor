@@ -11,9 +11,31 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-//---------------------------------
+// Parses the file to find a value for a given key
+string LinuxParser::KeyValParser(string key, string path) {
+  string value = "n/a";
+  bool search = true;
+  string line;
+  string temp;
+  std::ifstream stream(path);
+  if(stream.is_open()) {
+    while(search == true && stream.peek() != EOF) {
+      std::getline(stream, line);
+      std::istringstream linestream(line); 
+      linestream >> temp;
+      if(temp == key) {
+        linestream >> temp;
+        value = temp;
+        search = false;
+      } // End inner if
+    } // End while
+  } // End outer if
+  return value; 
+}
+
+//-----------------------------------------------------------------------------
 // System
-//---------------------------------
+//-----------------------------------------------------------------------------
 
 string LinuxParser::OperatingSystem() {
   string line;
@@ -70,6 +92,25 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
+// Reads and returns CPU utilization
+vector<string> LinuxParser::CpuUtilization() { 
+  vector<string> timers;
+  string timer;
+  string line;
+  string skip;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line); 
+    linestream >> skip;
+    for(int i = 0; i < 10; ++i) {
+      linestream >> timer;
+      timers.push_back(timer);
+    }
+  }
+  return timers; 
+}
+
 // Reads and returns the system memory utilization
 float LinuxParser::MemoryUtilization() { 
   string skip;
@@ -92,6 +133,24 @@ float LinuxParser::MemoryUtilization() {
   return mem;
 }
 
+// Reads and returns the total number of processes
+int LinuxParser::TotalProcesses() { 
+  int t_processes = 0;
+  string path = kProcDirectory + kStatFilename;
+  string result = LinuxParser::KeyValParser("processes", path);
+  t_processes = std::stoi(result);
+  return t_processes;
+}
+
+// Reads and returns the number of running processes
+int LinuxParser::RunningProcesses() { 
+  int a_processes = 0;
+  string path = kProcDirectory + kStatFilename;
+  string result = LinuxParser::KeyValParser("procs_running", path);
+  a_processes = std::stoi(result);
+  return a_processes;
+}
+
 // Reads and returns the system uptime
 long LinuxParser::UpTime() { 
   long uptime = 0.0;
@@ -106,6 +165,10 @@ long LinuxParser::UpTime() {
   uptime = std::stol(temp);
   return uptime; 
 }
+
+//-----------------------------------------------------------------------------
+// Processor
+//-----------------------------------------------------------------------------
 
 // Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { 
@@ -134,29 +197,6 @@ long LinuxParser::IdleJiffies() {
   return i_jiffies;
 }
 
-// Reads and returns CPU utilization
-vector<string> LinuxParser::CpuUtilization() { 
-  vector<string> timers;
-  string timer;
-  string line;
-  string skip;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line); 
-    linestream >> skip;
-    for(int i = 0; i < 10; ++i) {
-      linestream >> timer;
-      timers.push_back(timer);
-    }
-  }
-  return timers; 
-}
-
-//---------------------------------
-// Process
-//---------------------------------
-
 // Reads and returns the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) { 
   long a_jiffies = 0;
@@ -177,61 +217,9 @@ long LinuxParser::ActiveJiffies(int pid) {
   return a_jiffies;
 }
 
-// Parses the file in the path for a given token as a key to a value
-string LinuxParser::KeyValParser(string token, string path) {
-  string processes = "n/a";
-  bool search = true;
-  string line;
-  string temp;
-  std::ifstream stream(path);
-  if(stream.is_open()) {
-    while(search == true && stream.peek() != EOF) {
-      std::getline(stream, line);
-      std::istringstream linestream(line); 
-      linestream >> temp;
-      if(temp == token) {
-        linestream >> temp;
-        processes = temp;
-        search = false;
-      } // End inner if
-    } // End while
-  } // End outer if
-  return processes; 
-}
-
-// Reads and returns the total number of processes
-int LinuxParser::TotalProcesses() { 
-  int t_processes = 0;
-  string path = kProcDirectory + kStatFilename;
-  string result = LinuxParser::KeyValParser("processes", path);
-  t_processes = std::stoi(result);
-  return t_processes;
-}
-
-// Reads and returns the number of running processes
-int LinuxParser::RunningProcesses() { 
-  int a_processes = 0;
-  string path = kProcDirectory + kStatFilename;
-  string result = LinuxParser::KeyValParser("procs_running", path);
-  a_processes = std::stoi(result);
-  return a_processes;
-}
-
-// Reads and returns the command associated with a process
-string LinuxParser::Command(int pid) { 
-  string line = "n/a";
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-  }
-  return line;
-}
-
-// Reads and returns the memory used by a process
-string LinuxParser::Ram(int pid) { 
-  string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
-  return LinuxParser::KeyValParser("VmSize:", path);
-}
+//-----------------------------------------------------------------------------
+// Process
+//-----------------------------------------------------------------------------
 
 // Reads and returns the user ID associated with a process
 string LinuxParser::Uid(int pid) { 
@@ -264,6 +252,12 @@ string LinuxParser::User(int pid) {
   return user; 
 }
 
+// Reads and returns the memory used by a process
+string LinuxParser::Ram(int pid) { 
+  string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
+  return LinuxParser::KeyValParser("VmSize:", path);
+}
+
 // Reads and returns the uptime of a process
 long LinuxParser::UpTime(int pid) { 
   long ticks = 0;
@@ -279,4 +273,14 @@ long LinuxParser::UpTime(int pid) {
     linestream >> ticks;
   }
   return ticks / sysconf(_SC_CLK_TCK);
+}
+
+// Reads and returns the command associated with a process
+string LinuxParser::Command(int pid) { 
+  string line = "n/a";
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+  }
+  return line;
 }
