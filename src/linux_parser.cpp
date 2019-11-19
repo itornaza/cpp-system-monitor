@@ -11,6 +11,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//---------------------------------
+// System
+//---------------------------------
+
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -101,25 +105,6 @@ long LinuxParser::UpTime() {
   return uptime; 
 }
 
-// Reads and returns the number of active jiffies for a PID
-long LinuxParser::ActiveJiffies(int pid) { 
-  string utime;
-  string stime;
-  string line;
-  string skip;
-  std::ifstream stream(kProcDirectory + std::to_string(pid)+ kStatFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line); 
-    for(int i = 1; i < 13; ++i) {
-      linestream >> skip;
-    }
-    linestream >> utime >> stime;
-  }
-  long a_jiffies = (std::stol(utime) + std::stol(stime));
-  return a_jiffies;
-}
-
 // Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { 
   vector<string> jiffies = CpuUtilization();
@@ -164,9 +149,32 @@ vector<string> LinuxParser::CpuUtilization() {
   return timers; 
 }
 
+//---------------------------------
+// Process
+//---------------------------------
+
+// Reads and returns the number of active jiffies for a PID
+long LinuxParser::ActiveJiffies(int pid) { 
+  string utime;
+  string stime;
+  string line;
+  string skip;
+  std::ifstream stream(kProcDirectory + std::to_string(pid)+ kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line); 
+    for(int i = 1; i < 13; ++i) {
+      linestream >> skip;
+    }
+    linestream >> utime >> stime;
+  }
+  long a_jiffies = (std::stol(utime) + std::stol(stime));
+  return a_jiffies;
+}
+
 // Parses the file in the path for a given token as a key to a value
 string LinuxParser::SystemProcesses(string token, string path) {
-  string processes;
+  string processes = "n/a";
   bool search = true;
   string line;
   string temp;
@@ -202,7 +210,7 @@ int LinuxParser::RunningProcesses() {
 
 // Reads and returns the command associated with a process
 string LinuxParser::Command(int pid) { 
-  string line;
+  string line = "n/a";
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
@@ -228,7 +236,7 @@ string LinuxParser::User(int pid) {
   string test_user;
   string test_uid;
   string skip;
-  string user = "";
+  string user = "n/a";
   string uid = LinuxParser::Uid(pid);
   std::ifstream stream(kPasswordPath);
   bool search = true;
@@ -249,7 +257,7 @@ string LinuxParser::User(int pid) {
 
 // Reads and returns the uptime of a process
 long LinuxParser::UpTime(int pid) { 
-  long ticks;
+  long ticks = 0;
   string line;
   string skip;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
