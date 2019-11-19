@@ -18,7 +18,7 @@ using std::vector;
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
-  string value;
+  string value = "n/a";
   std::ifstream filestream(kOSPath);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -39,7 +39,7 @@ string LinuxParser::OperatingSystem() {
 
 string LinuxParser::Kernel() {
   string skip;
-  string kernel;
+  string kernel = "n/a";
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
@@ -75,6 +75,7 @@ float LinuxParser::MemoryUtilization() {
   string skip;
   string temp;
   string line;
+  float mem = 0.0;
   vector<string> memory;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
   if (stream.is_open()) {
@@ -87,7 +88,8 @@ float LinuxParser::MemoryUtilization() {
   }
   float mem_total = std::stof(memory[0]);
   float mem_free = std::stof(memory[1]);
-  return (mem_total - mem_free) / mem_total;
+  mem = (mem_total - mem_free) / mem_total;
+  return mem;
 }
 
 // Reads and returns the system uptime
@@ -117,16 +119,18 @@ long LinuxParser::Jiffies() {
 
 // Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { 
-  long a_jiffies = Jiffies() - IdleJiffies();
+  long a_jiffies = 0;
+  a_jiffies = Jiffies() - IdleJiffies();
   return a_jiffies;
 }
 
 // Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { 
   vector<string> jiffies = CpuUtilization();
+  long i_jiffies = 0;
   long idle = std::stoi(jiffies[3]);
   long iowait = std::stoi(jiffies[4]);
-  long i_jiffies = idle + iowait;
+  i_jiffies = idle + iowait;
   return i_jiffies;
 }
 
@@ -155,6 +159,7 @@ vector<string> LinuxParser::CpuUtilization() {
 
 // Reads and returns the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) { 
+  long a_jiffies = 0;
   string utime;
   string stime;
   string line;
@@ -168,12 +173,12 @@ long LinuxParser::ActiveJiffies(int pid) {
     }
     linestream >> utime >> stime;
   }
-  long a_jiffies = (std::stol(utime) + std::stol(stime));
+  a_jiffies = (std::stol(utime) + std::stol(stime));
   return a_jiffies;
 }
 
 // Parses the file in the path for a given token as a key to a value
-string LinuxParser::SystemProcesses(string token, string path) {
+string LinuxParser::KeyValParser(string token, string path) {
   string processes = "n/a";
   bool search = true;
   string line;
@@ -196,16 +201,20 @@ string LinuxParser::SystemProcesses(string token, string path) {
 
 // Reads and returns the total number of processes
 int LinuxParser::TotalProcesses() { 
+  int t_processes = 0;
   string path = kProcDirectory + kStatFilename;
-  string result = LinuxParser::SystemProcesses("processes", path);
-  return std::stoi(result);
+  string result = LinuxParser::KeyValParser("processes", path);
+  t_processes = std::stoi(result);
+  return t_processes;
 }
 
 // Reads and returns the number of running processes
 int LinuxParser::RunningProcesses() { 
+  int a_processes = 0;
   string path = kProcDirectory + kStatFilename;
-  string result = LinuxParser::SystemProcesses("procs_running", path);
-  return std::stoi(result);
+  string result = LinuxParser::KeyValParser("procs_running", path);
+  a_processes = std::stoi(result);
+  return a_processes;
 }
 
 // Reads and returns the command associated with a process
@@ -215,19 +224,19 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
   }
-  return line; 
+  return line;
 }
 
 // Reads and returns the memory used by a process
 string LinuxParser::Ram(int pid) { 
   string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
-  return LinuxParser::SystemProcesses("VmSize:", path);
+  return LinuxParser::KeyValParser("VmSize:", path);
 }
 
 // Reads and returns the user ID associated with a process
 string LinuxParser::Uid(int pid) { 
   string path = kProcDirectory + "/" + std::to_string(pid) + kStatusFilename;
-  return LinuxParser::SystemProcesses("Uid:", path);
+  return LinuxParser::KeyValParser("Uid:", path);
 }
 
 // Reads and returns the user associated with a process
