@@ -14,12 +14,13 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-//-----------------------------------------------------------------------------
-// Accessors
-//-----------------------------------------------------------------------------
-
-// Return the system's CPU
-Processor& System::Cpu() { return cpu_; }
+/**
+ * Return the system's CPU. 
+ * Reserved for future additional features
+ */
+Processor& System::Cpu() { 
+  return cpu_; 
+}
 
 // Returns a container composed of the system's processes
 vector<Process>& System::Processes() { 

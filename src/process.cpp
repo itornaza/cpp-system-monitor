@@ -45,10 +45,12 @@ long Process::UpTime() {
   return up_time_;
 }
 
+// Overloads the less operator according to cpu utilization
 bool Process::operator<(Process const& a) const { 
   return this->cpu_utilization_ < a.cpu_utilization_;
 }
 
+// Overloads the greater operator according to cpu utilization
 bool Process::operator>(Process const& a) const { 
   return this->cpu_utilization_ > a.cpu_utilization_;
 }

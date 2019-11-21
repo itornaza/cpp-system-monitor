@@ -2,15 +2,10 @@
 #define PROCESS_H
 
 #include <string>
-/*
-Basic class for Process representation
-It contains relevant attributes as shown below
-*/
+
 class Process {
  public:
-  //----------------
   // Accessors
-  //----------------
   int Pid();
   std::string User();
   std::string Command();
@@ -18,9 +13,7 @@ class Process {
   std::string Ram();
   long int UpTime();
   
-  //----------------
   // Mutators
-  //----------------
   void Pid(int);
   void User(int);
   void Command(int);
@@ -28,9 +21,7 @@ class Process {
   void Ram(int);
   void UpTime(int);
   
-  //---------------------
-  // Operator overload
-  //---------------------
+  // Operators overload
   bool operator<(Process const& a) const;
   bool operator>(Process const& a) const;
 

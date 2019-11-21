@@ -11,6 +11,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//-----------------------------------------------------------------------------
+// Utils
+//-----------------------------------------------------------------------------
+
 // Parses the file to find a value for a given key
 string LinuxParser::KeyValParser(string key, string path) {
   string value = "n/a";
