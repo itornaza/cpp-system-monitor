@@ -208,7 +208,7 @@ long LinuxParser::ActiveJiffies(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line); 
-    for(int i = 1; i < 13; ++i) {
+    for(int i = 1; i < 14; ++i) {
       linestream >> skip;
     }
     linestream >> utime >> stime;

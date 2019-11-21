@@ -31,8 +31,9 @@ class Process {
   //---------------------
   // Operator overload
   //---------------------
-  bool operator<(Process const& a) const;  // TODO: See src/process.cpp
-  
+  bool operator<(Process const& a) const;
+  bool operator>(Process const& a) const;
+
  private:
   int pid_{0};
   std::string user_{""};

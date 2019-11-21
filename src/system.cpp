@@ -18,13 +18,14 @@ using std::vector;
 // Accessors
 //-----------------------------------------------------------------------------
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Returns a container composed of the system's processes
 vector<Process>& System::Processes() { 
   vector<int> pids = LinuxParser::Pids();
-  for (int pid : pids) {
+  processes_.clear();
+  for(int pid: pids) {
     Process p;
     p.Pid(pid);
     p.User(pid);
@@ -34,9 +35,7 @@ vector<Process>& System::Processes() {
     p.UpTime(pid);
     processes_.push_back(p);
   }
-
-  // TODO: sort processes and then return
-  // std::sort(processes_.begin(), processes_.end(), std::less<Process>());
+  std::sort(processes_.begin(), processes_.end(), std::greater<Process>());
   return processes_; 
 }
 
