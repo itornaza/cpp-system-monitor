@@ -166,7 +166,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> temp;
   }
-  uptime = std::stol(temp);
+  uptime = std::atoi(temp.c_str());
   return uptime; 
 }
 
@@ -217,7 +217,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     }
     linestream >> utime >> stime;
   }
-  a_jiffies = (std::stol(utime) + std::stol(stime));
+  a_jiffies = std::atol(utime.c_str()) + std::atol(stime.c_str());
   return a_jiffies;
 }
 
